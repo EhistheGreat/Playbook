@@ -1,0 +1,15 @@
+---
+- name: Change hostname on target machine
+  hosts: devnet
+  become: yes
+
+  vars_prompt:
+    - name: new_hostname
+      prompt: "Enter the new hostname for the target machine"
+      private: no
+
+  tasks:
+    - name: Set the hostname
+      ansible.builtin.hostname:
+        name: "{{ new_hostname }}"
+

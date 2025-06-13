@@ -1,0 +1,10 @@
+---
+  - name: Create a hostname
+    hosts: switch1
+    gather_facts: no
+    vars: 
+      thegreat: TheGreatRouter
+    tasks:
+      - name: set hostname
+        ios_config:
+          src: template/hostname.j2

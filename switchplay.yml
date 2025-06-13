@@ -1,0 +1,57 @@
+---
+- name: Change Hostname and Interface Description
+  hosts: switch1
+  gather_facts: no
+  vars:
+    router_name: "TheGreatRouter"
+    interface_name: "GigabitEthernet0/0"
+    interface_description: "this is the great router hands off"
+  vars_prompt:
+    - name : loopback_no
+      prompt: "Enter the loopback number"
+      private: no
+
+    - name : loopback_ip
+      prompt: "Enter the loopback address"
+      private: no
+
+    - name : loopback_mask
+      prompt: "Enter the loopback mask"
+      private: no
+  tasks:
+    - name: Set hostname
+      ios_config:
+        lines:
+          - hostname {{ router_name }}
+
+    - name: Set interface description
+      ios_config:
+        parents:
+          - interface {{ interface_name }}
+        lines:
+          - description {{ interface_description }}
+          - no shutdown
+
+    - name: set Loopback
+      ios_config:
+        parents: 
+          - interface loopback {{ loopback_no}}
+        lines:
+          - ip address {{ loopback_ip }} {{ loopback_mask }}
+          - no shutdown
+
+    - name: generate facts
+      ios_facts:
+    - name: show hostname
+      debug:
+        var: ansible_net_hostname
+
+    - name : show commands
+      ios_command:
+        commands:
+          - show ip interface brief
+          - show version
+      register: output
+    - name: Display command output
+      debug:
+        var: output.stdout_lines

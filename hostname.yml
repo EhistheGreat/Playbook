@@ -1,0 +1,82 @@
+---
+- name: Change Hostname and Interface Description
+  hosts: devnet1
+  gather_facts: no
+  vars:
+    router_name: "TheGreatRouter"
+    interface_name: "GigabitEthernet2"
+    interface_description: "this is the great router hands off"
+  tasks:
+    - name: Set hostname
+      cisco.ios.ios_config:
+        lines:
+          - hostname {{ router_name }}
+
+    - name: Set interface description
+      cisco.ios.ios_config:
+        parents:
+          - interface {{ interface_name }}
+        lines:
+          - description {{ interface_description }}
+          - no shutdown
+
+---
+
+- name: Configure Loopback Interface
+  hosts: devnet2
+  gather_facts: no
+  vars_prompt:
+    - name: loopback
+      prompt: "Enter the loopback interface number"
+      private: no
+
+    - name: loopback_ip
+      prompt: "Enter the loopback interface IP address"
+      private: no 
+
+    - name: loopback_mask
+      prompt: "Enter the loopback interface mask"
+      private: no
+
+  tasks:
+    - name: Set loopback interface with IP
+      cisco.ios.ios_config:
+        parents:
+          - interface Loopback{{ loopback }}
+        lines:
+          - ip address {{ loopback_ip }} {{ loopback_mask }}
+          - no shutdown
+
+---
+
+- name: Create VLAN and Assign Interface IP
+  hosts: devnet2
+  tags: vlan
+  gather_facts: no
+  vars:
+    vlan_id: 30
+    vlan_name: "dev"
+
+  vars_prompt:
+    - name: vlan_ip
+      prompt: "Enter VLAN IP address"
+      private: no 
+
+    - name: vlan_mask
+      prompt: "Enter VLAN subnet mask"
+      private: no
+
+  tasks: 
+    - name: Create VLAN and assign name
+      cisco.ios.ios_config:
+        lines:
+          - vlan {{ vlan_id }}
+          - name {{ vlan_name }}
+
+    - name: Set VLAN interface IP and enable
+      cisco.ios.ios_config:
+        parents:
+          - interface Vlan{{ vlan_id }}
+        lines:
+          - ip address {{ vlan_ip }} {{ vlan_mask }}
+          - no shutdown

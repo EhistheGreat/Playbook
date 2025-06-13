@@ -1,0 +1,76 @@
+---
+- name: change_host
+  hosts: devnet1
+  gather_facts: no
+  vars:
+    router_name: router_name
+    interface_name: Gig2
+    interface_description: "this is the great router hands off"
+  tasks:
+    - name: Set_hostname
+      ios_config:
+        lines:
+          - hostname {{ router_name}}
+
+    - name : Set_interface_description
+      ios_config:
+        parents:
+          - interface {{interface_name }}
+        lines:
+          - description {{ interface_description }}
+          - no sh
+
+
+- name: change_loopback
+  hosts: devnet2
+  gather_facts: no
+  vars_prompt:
+   - name: loopback
+     prompt: "Enter the loopback interface number"
+     private: no
+
+   - name : loopkack_no
+     prompt: "Enter the loopback interface ip address"  
+     private: no 
+
+   - name: loopback_mask
+     prompt: "Enter the loopback interface mask"
+     private: no
+
+  tasks:
+    - name: set_loopback
+      ios_config:
+        parents: interface loopback {{ loopback }}
+        lines:
+          - ip address {{ loopkack_no }} {{ loopback_mask }}
+          - no shutdown
+
+- name: change_vlan
+  hosts: devnet
+  gather_facts: no 
+  vars:
+    vlan_id: 30
+    vlan_name: dev
+
+  vars_prompt:
+    - name: vlan_ip
+      prompt: "Enter vlan ip address"
+      private: no 
+
+    - name: vlan_mask
+      prompt: "Enter vlan mask address"
+      private: no
+
+  tasks: 
+    - name: set vlan
+      ios_config:
+        lines:
+          - vlan {{ vlan_id}}
+          - name {{ vlan_name }}
+
+    - name: set vlan 1p
+      ios_config:
+        parents: interface vlan {{ vlan_id }}
+        lines:
+          - ip address {{ vlan_ip }} {{ vlan_mask}}
+          - no shutdown
