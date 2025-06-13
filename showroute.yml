@@ -1,0 +1,22 @@
+--- 
+  - name: show the route 
+    hosts: switch1
+    gather_facts: no 
+    tasks:
+      - name: show route
+        ios_command:
+          commands:
+            - show ip route
+        register: output
+
+
+      - name: display output
+        debug:
+          var: output.stdout_lines
+
+
+      - name: save raw output to file
+        copy:
+          content: "{{ output.stdout[0] }}"
+          dest: "./route_output.txt"
+        delegate_to: localhost
