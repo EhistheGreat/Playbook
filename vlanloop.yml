@@ -1,0 +1,30 @@
+---
+  - name: set up vlan
+    hosts: switch1
+    gather_facts: no 
+
+    vars:
+      vlan_list:
+        - {vlan_id: 5, vlan_name: dev }
+        - { vlan_id: 9, vlan_name: hrdept }
+
+    tasks:
+      - name: set vlan
+        ios_config:
+          lines:
+            - vlan {{ item.vlan_id }}
+            - name {{ item.vlan_name }}
+        loop: "{{ vlan_list }}"
+        tags: vlan
+
+      - name: show the vlan brief
+        ios_command:
+          commands:
+            - show vlan brief
+        register: output 
+
+      - name: save to localhost
+        copy:
+          content:  "{{ output.stdout[0]}}"
+          dest: /home/remote-server/vlan_output.txt
+        delegate_to: localhost
