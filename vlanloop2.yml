@@ -1,0 +1,21 @@
+---
+  - name: set up vlan
+    hosts: switch1
+    gather_facts: no 
+
+    vars:
+      vlan_list:
+        - {vlan_id: 5, vlan_name: dev }
+        - { vlan_id: 9, vlan_name: hrdept }
+
+    tasks:
+      - name: rendering template 
+        template:
+          src: template/vlanconfig.j2
+          dest: /home/remote-server/ansible_lab/tmp/generated_vlan_config.txt
+
+      - name: set vlan
+        ios_config:
+          src: /home/remote-server/ansible_lab/tmp/generated_vlan_config.txt
+          match: none
+          save_when: modified

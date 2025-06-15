@@ -1,0 +1,6 @@
+ vlan 5
+    name dev
+    exit
+ vlan 9
+    name hrdept
+    exit

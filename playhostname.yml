@@ -46,7 +46,8 @@
           - no shutdown
 
 - name: change_vlan
-  hosts: devnet
+  hosts: devnet2
+  tags: vlan
   gather_facts: no 
   vars:
     vlan_id: 30

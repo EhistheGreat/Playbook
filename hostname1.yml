@@ -1,0 +1,43 @@
+---
+  - name: channging the hostname, adding an ntp server 
+    hosts: switch1
+    gather_facts: no
+    vars_prompt:
+      - name: hostname
+        prompt: "ENTER YOUR HOSTNAME"
+        private: no
+    tasks:
+      - name: set hostname
+        ios_config:
+          lines:
+            - hostname {{  hostname}}
+        tags:
+          - hostname
+       
+      - name: set ntp server
+        ios_config:
+          lines:
+            - ntp server 10.10.10.10
+      
+      - name: set static route
+        ios_config:
+          lines:
+            - ip route 192.168.1.1 255.255.255.0 192.168.20.1
+
+      - name: generate facts
+        ios_facts:
+
+      - name: show hostname
+        debug:
+          var: ansible_net_hostname
+
+      - name: show interface brief
+        ios_command:
+         commands:
+            - show ip interface brief
+        register: output
+
+      - name: display the command output
+        debug:
+          var: output.stdout_lines
+
