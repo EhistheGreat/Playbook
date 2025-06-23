@@ -1,0 +1,20 @@
+--- 
+  - name: configuration for my devices
+    hosts : device
+    gather_facts: no 
+    
+    tasks:
+      - name: show interface
+        ios_command:
+          commands:
+            - show version
+        register: output
+    
+      - name: print output
+        debug:
+          var: "output.stdout_lines[0]"
+
+      - name: save output to file
+        copy:
+          content: "{{ output.stdout_lines[0] }}"
+          dest: "output.txt"
