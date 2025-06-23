@@ -10,12 +10,12 @@
     - name: Set_hostname
       ios_config:
         lines:
-          - hostname {{ router_name}}
+          - hostname {{ router_name }}
 
     - name : Set_interface_description
       ios_config:
         parents:
-          - interface {{interface_name }}
+          - interface {{ interface_name }}
         lines:
           - description {{ interface_description }}
           - no sh

@@ -9,13 +9,12 @@
 #the R1 here specifies the host here , would be used in the logs
 #dont neccessry to add a variable to the hostname or ip add of device
 
-R1 ansible_host=devnetsandboxiosxec9k.cisco.com
-
+R1 ansible_host=devnetsandboxiosxe.cisco.com
 [devnet1:vars]
 #specify variables for host here!
 
 ansible_user=samuelehis2003
-ansible_password=VC9kqE-_2KaIT5 
+ansible_password=X0-TlK6m9snA-o6
 ansible_connection=network_cli 
 ansible_network_os=cisco.ios.ios 
 ansible_become=yes 
@@ -27,13 +26,13 @@ ansible_become_pass=YOUR_ENABLE_PASSWORD
 #the  R2 here specifies the host here , would be used in the logs
 #dont neccessry to add a variable to the hostname or ip add of device
 
-R2 ansible_host=devnetsandboxiosxec9k.cisco.com
+MLS3 ansible_host=devnetsandboxiosxec9k.cisco.com
 
 [devnet2:vars]
 #specify variables for host here!
 
 ansible_user=leiaclaire08
-ansible_password=0t5Q2_wv_LT41
+ansible_password=3-6zz_W7QQaOf
 ansible_connection=network_cli
 ansible_network_os=cisco.ios.ios
 ansible_become=yes
